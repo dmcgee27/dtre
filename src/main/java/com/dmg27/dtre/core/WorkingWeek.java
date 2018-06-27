@@ -5,7 +5,7 @@
  * Copyright 2018 (c) DMG27 Ltd.
  *
  */
-package com.dmg27.dtre.util;
+package com.dmg27.dtre.core;
 
 import com.dmg27.dtre.util.Util;
 import java.time.DayOfWeek;
@@ -23,38 +23,48 @@ import java.util.Map;
 public class WorkingWeek {
     
     /**
-     * Working week Sunday to Thursday.
+     * The key for the default working week.
      */
-    private static final List<DayOfWeek> mondayToFriday = Arrays.asList(
-        new DayOfWeek [] {
-            DayOfWeek.MONDAY,
-            DayOfWeek.TUESDAY,
-            DayOfWeek.WEDNESDAY,
-            DayOfWeek.THURSDAY,
-            DayOfWeek.FRIDAY
-        }
-    );
-    
-    /**
-     * Working week Sunday to Thursday.
-     */
-    private static final List<DayOfWeek> sundayToThursday = Arrays.asList(
-        new DayOfWeek [] {
-            DayOfWeek.SUNDAY,
-            DayOfWeek.MONDAY,
-            DayOfWeek.TUESDAY,
-            DayOfWeek.WEDNESDAY,
-            DayOfWeek.THURSDAY
-        }
-    );
+    private static final String DEFAULT_CURRENCY = "default";
     
     /**
      * Collection of working weeks keyed on currency.
      */
-    private static final Map<String, List<DayOfWeek>> workingWeeks = new HashMap<>();
-    static {
-        workingWeeks.put("AED", sundayToThursday);
-        workingWeeks.put("SAR", sundayToThursday);
+    private Map<String, List<DayOfWeek>> workingWeeks;
+    
+    /**
+     * Create an instance of the {@link WorkingWeek} class.
+     * <p>
+     * Note populates the working weeks with a default working week and
+     * with working weeks for currencies AED and SAR.
+     * </p>
+     */
+    public WorkingWeek() {
+        List<DayOfWeek> mondayToFriday = Arrays.asList(
+            new DayOfWeek [] {
+                DayOfWeek.MONDAY,
+                DayOfWeek.TUESDAY,
+                DayOfWeek.WEDNESDAY,
+                DayOfWeek.THURSDAY,
+                DayOfWeek.FRIDAY
+            }
+        );
+        this.workingWeeks = new HashMap<>();
+        this.workingWeeks.put(DEFAULT_CURRENCY, mondayToFriday);
+    }
+        
+    /**
+     * Create an instance of the {@link WorkingWeek} class.
+     * @param workingWeeks The working weeks map keyed on currency.
+     * @throws DtreException When working weeks map is null or empty.
+     */
+    public WorkingWeek(Map<String, List<DayOfWeek>> workingWeeks) {
+        this();
+        if (workingWeeks.isEmpty()) {
+            throw new DtreException("empty currency to work weeks map in WorkingWeek constructor");
+        }
+        
+        this.workingWeeks.putAll(workingWeeks);
     }
     
     /**
@@ -63,14 +73,14 @@ public class WorkingWeek {
      * @param date the input date
      * @return The date of the next working day, or the input date if it is the date of a working day.
      */
-    static public LocalDate getNextWorkingDate(String currencyCode, LocalDate date) {
-         List<DayOfWeek> workingWeek = getWorkingWeek(currencyCode);
+    public LocalDate getNextWorkingDate(String currencyCode, LocalDate date) {
+         List<DayOfWeek> workingWeek = this.getWorkingWeek(currencyCode);
          DayOfWeek dayOfWeek = DayOfWeek.from(date);
          if (workingWeek.contains(dayOfWeek)) {
              return date;
          }
          
-         dayOfWeek = getFirstWorkingDayOfWeek(currencyCode);
+         dayOfWeek = this.getFirstWorkingDayOfWeek(currencyCode);
          Temporal adjustedTemporal = dayOfWeek.adjustInto(date);
          LocalDate adjustedDate = LocalDate.from(adjustedTemporal);
          
@@ -94,10 +104,10 @@ public class WorkingWeek {
      * @param currencyCode The currency code.
      * @return The working week.
      */
-    static List<DayOfWeek> getWorkingWeek(String currencyCode) {
+    List<DayOfWeek> getWorkingWeek(String currencyCode) {
         Util.validateCurrencyCode(currencyCode);
-        List<DayOfWeek> workingWeek = workingWeeks.get(currencyCode);
-        return workingWeek == null ? mondayToFriday : workingWeek;
+        List<DayOfWeek> workingWeek = this.workingWeeks.get(currencyCode);
+        return workingWeek == null ? this.workingWeeks.get(DEFAULT_CURRENCY) : workingWeek;
     }
     
     /**
@@ -105,9 +115,8 @@ public class WorkingWeek {
      * @param currencyCode The currency code.
      * @return The next working day.
      */
-    static DayOfWeek getFirstWorkingDayOfWeek(String currencyCode) {
+    DayOfWeek getFirstWorkingDayOfWeek(String currencyCode) {
         Util.validateCurrencyCode(currencyCode);
-        return getWorkingWeek(currencyCode).get(0);
+        return this.getWorkingWeek(currencyCode).get(0);
     }
-    
 }
