@@ -20,7 +20,7 @@ import java.util.Map;
  * This class represents the relationship between currency and working weeks.
  * @author douglasmcgee
  */
-public class WorkingWeek {
+final public class WorkingWeek {
     
     /**
      * The key for the default working week.
@@ -68,12 +68,13 @@ public class WorkingWeek {
     }
     
     /**
-     * Get the date of the next working day for the currency code and the input date.
+     * Get the date of the working day for the currency code and the input date, adjusting
+     * for the next working day when the date is not a working day.
      * @param currencyCode The currency code.
      * @param date the input date
      * @return The date of the next working day, or the input date if it is the date of a working day.
      */
-    public LocalDate getNextWorkingDate(String currencyCode, LocalDate date) {
+    public LocalDate getWorkingDate(String currencyCode, LocalDate date) {
          List<DayOfWeek> workingWeek = this.getWorkingWeek(currencyCode);
          DayOfWeek dayOfWeek = DayOfWeek.from(date);
          if (workingWeek.contains(dayOfWeek)) {

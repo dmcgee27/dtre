@@ -194,7 +194,7 @@ public class WorkingWeekTest {
     
     @Test (expected = DtreException.class)
     public void bogusCurrencyCodeGetNextWorkingDate() {
-        this.createDefaultWorkingWeek().getNextWorkingDate("BOGUS", LocalDate.parse("2018-06-27"));
+        this.createDefaultWorkingWeek().getWorkingDate("BOGUS", LocalDate.parse("2018-06-27"));
     }
     
     @Test (expected = DtreException.class)
@@ -240,11 +240,11 @@ public class WorkingWeekTest {
             List<LocalDate> expectedNextWorkingDates,
             List<LocalDate> nonWorkingDates) {
         for (int i = 0; i < workingDates.size(); i++) {
-            assertEquals(expectedWorkingDates.get(i), this.createDefaultWorkingWeek().getNextWorkingDate(currencyCode, workingDates.get(i)));
+            assertEquals(expectedWorkingDates.get(i), this.createDefaultWorkingWeek().getWorkingDate(currencyCode, workingDates.get(i)));
         }
         
         for (int i = 0; i < nonWorkingDates.size(); i++) {
-            assertEquals(expectedNextWorkingDates.get(i), this.createDefaultWorkingWeek().getNextWorkingDate(currencyCode, nonWorkingDates.get(i)));
+            assertEquals(expectedNextWorkingDates.get(i), this.createDefaultWorkingWeek().getWorkingDate(currencyCode, nonWorkingDates.get(i)));
         }
     }
 }
