@@ -140,25 +140,32 @@ public class InstructionTest {
     public void settlementAmountTestOnWorkingDay() {
         Instruction instruction = this.create()
             .settlementDate("01 Jan 2016");
-        assertEquals(LocalDate.parse("2016-01-01"), instruction.calculateEffectiveSettlementDate());
-        assertTrue(instruction.isSettleable());
-        assertFalse(instruction.isSettled());
-        instruction.settle();
-        assertTrue(instruction.isSettled());
-        assertTrue(instruction.getSettledAmount().isPresent());
-        assertEquals(new BigDecimal("10025.00"), instruction.getSettledAmount().get());
+        this.assertSettlementTest(instruction, "2016-01-01", "10025.00");
     }
     
     @Test 
     public void settlementAmountNextWorkingDayTest() {
-        Instruction instruction = this.create();    
-        assertEquals(LocalDate.parse("2016-01-04"), instruction.calculateEffectiveSettlementDate());
+        Instruction instruction = this.create();
+        this.assertSettlementTest(instruction, "2016-01-04", "10025.00");
+    }
+    
+    /**
+     * Assert the settlement of an instruction.
+     * @param instruction
+     * @param expectedSettlementDate
+     * @param expectedSettledAmount 
+     */
+    private void assertSettlementTest(Instruction instruction, String expectedSettlementDate, String expectedSettledAmount) {
+        assertEquals(LocalDate.parse(expectedSettlementDate), instruction.calculateEffectiveSettlementDate());
         assertTrue(instruction.isSettleable());
         assertFalse(instruction.isSettled());
         instruction.settle();
         assertTrue(instruction.isSettled());
         assertTrue(instruction.getSettledAmount().isPresent());
-        assertEquals(new BigDecimal("10025.00"), instruction.getSettledAmount().get());
+//        BigDecimal amount = instruction.getUnitPrice().multiply(instruction.getAgreedFx()).multiply(new BigDecimal(instruction.getUnits()));
+//        BigDecimal amount2 = instruction.getUnitPrice().multiply(instruction.getAgreedFx()).multiply(new BigDecimal(instruction.getUnits())).setScale(2, RoundingMode.HALF_EVEN);
+//        System.out.println("amount = " + amount + ", amount2 = " + amount2);
+        assertEquals(new BigDecimal(expectedSettledAmount), instruction.getSettledAmount().get());
     }
     
     @Test 
@@ -176,22 +183,20 @@ public class InstructionTest {
         this.assertSettlementAmountRoundingTest("2506.24", "25.06235", "100.00", 1);
     }
     
+    /**
+     * Assert the rounding of the settlement value.
+     * @param expectedSettledAmount
+     * @param agreedFx
+     * @param unitPrice
+     * @param units 
+     */
     private void assertSettlementAmountRoundingTest(String expectedSettledAmount, String agreedFx, String unitPrice, int units) {
         Instruction instruction = this.create()
             .settlementDate("01 Jan 2016")
             .agreedFx(agreedFx)
             .unitPrice(unitPrice)
             .units(units);
-        assertEquals(LocalDate.parse("2016-01-01"), instruction.calculateEffectiveSettlementDate());
-        assertTrue(instruction.isSettleable());
-        assertFalse(instruction.isSettled());
-        instruction.settle();
-        assertTrue(instruction.isSettled());
-        assertTrue(instruction.getSettledAmount().isPresent());
-        BigDecimal amount = instruction.getUnitPrice().multiply(instruction.getAgreedFx()).multiply(new BigDecimal(instruction.getUnits()));
-        BigDecimal amount2 = instruction.getUnitPrice().multiply(instruction.getAgreedFx()).multiply(new BigDecimal(instruction.getUnits())).setScale(2, RoundingMode.HALF_EVEN);
-        System.out.println("amount = " + amount + ", amount2 = " + amount2);
-        assertEquals(new BigDecimal(expectedSettledAmount), instruction.getSettledAmount().get());
+        this.assertSettlementTest(instruction, "2016-01-01", expectedSettledAmount);
     }
     
     @Test
