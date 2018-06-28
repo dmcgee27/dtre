@@ -5,23 +5,17 @@
  * Copyright 2018 (c) DMG27 Ltd.
  *
  */
-package com.dmg27.dtre.core;
+package com.dmg27.dtre.trade;
 
+import com.dmg27.dtre.core.BuySell;
+import com.dmg27.dtre.core.DtreException;
+import static com.dmg27.dtre.trade.Instruction.NO_ID;
+import static com.dmg27.dtre.trade.WorkingWeekConstants.*;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.Clock;
-import java.time.DayOfWeek;
-import java.time.Instant;
 import java.time.LocalDate;
-import java.time.ZoneOffset;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -30,30 +24,9 @@ import org.junit.Test;
  */
 public class InstructionTest {
     
-    private static final String CURRENCY_CODE_AED = "AED";
-    private static final String CURRENCY_CODE_GBP = "GBP";
-    private static final String CURRENCY_CODE_SAR = "SAR";
-    private static final String CURRENCY_CODE_SGD = "SGD";
-    
-    private static final List<DayOfWeek> SUNDAY_TO_THURSDAY = Arrays.asList(
-        new DayOfWeek [] {
-            DayOfWeek.SUNDAY,
-            DayOfWeek.MONDAY,
-            DayOfWeek.TUESDAY,
-            DayOfWeek.WEDNESDAY,
-            DayOfWeek.THURSDAY
-        }
-    );
-    
-    private static final Map<String, List<DayOfWeek>> DEFAULT_CURRENCY_TO_WORKING_WEEK_MAP = new HashMap<>();
-    static {
-        DEFAULT_CURRENCY_TO_WORKING_WEEK_MAP.put(CURRENCY_CODE_AED, SUNDAY_TO_THURSDAY);
-        DEFAULT_CURRENCY_TO_WORKING_WEEK_MAP.put(CURRENCY_CODE_SAR, SUNDAY_TO_THURSDAY);
-    };
-    
     @Test
     public void createInstructionTest() {
-        Instruction instruction = this.create();
+        Instruction instruction = this.createInstruction();
         assertEquals("foo", instruction.getEntity());
         assertEquals(BuySell.B, instruction.getBuySell());
         assertEquals(new BigDecimal("0.50"), instruction.getAgreedFx());
@@ -63,66 +36,93 @@ public class InstructionTest {
         assertEquals(200, instruction.getUnits());
         assertEquals(new BigDecimal("100.25"), instruction.getUnitPrice());
         assertFalse(instruction.getSettledAmount().isPresent());
+        assertEquals(NO_ID, instruction.getId());
+    }
+    
+    @Test
+    public void setInstructionIdTest() {
+        Instruction instruction = this.createInstruction()
+            .id(1234);
+        assertEquals(1234, instruction.getId());
+        
+    }
+    
+    @Test
+    public void setInstructionEqualityTest() {
+        Instruction instruction1 = this.createInstruction();
+        Instruction instruction2 = this.createInstruction();
+        assertFalse(instruction1.equals(instruction2));
+        assertFalse(instruction2.equals(instruction1));
+        
+        instruction1.id(1234);
+        instruction2.id(1234);
+        assertTrue(instruction1.equals(instruction2));
+        assertTrue(instruction2.equals(instruction1));
+        
+        instruction1.id(1234);
+        instruction2.id(4321);
+        assertFalse(instruction1.equals(instruction2));
+        assertFalse(instruction2.equals(instruction1));
     }
     
     @Test
     public void createBuyInstructionTest() {
-        Instruction instruction = this.create();
+        Instruction instruction = this.createInstruction();
         assertEquals(BuySell.B, instruction.getBuySell());
     }
     
     @Test
     public void createSellInstructionTest() {
-        Instruction instruction = this.create()
+        Instruction instruction = this.createInstruction()
             .buySell("S");
         assertEquals(BuySell.S, instruction.getBuySell());
     }
     
     @Test (expected = DtreException.class)
     public void createInstructionBadBuySellTest() {
-        this.create()
+        this.createInstruction()
             .buySell("BOGUS");
     }
     
     @Test (expected = DtreException.class)
     public void createInstructionBadAgreedFxTest() {
-        this.create()
+        this.createInstruction()
             .agreedFx("BOGUS");
     }
     
     @Test (expected = DtreException.class)
     public void createInstructionBadCurrencyCodeTest() {
-        this.create()
+        this.createInstruction()
             .currencyCode("BOGUS");
     }
     
     @Test (expected = DtreException.class)
     public void createInstructionBadInstructionDateTest() {
-        this.create()
+        this.createInstruction()
             .instructionDate("1 Jan 2016");
     }
     
     @Test (expected = DtreException.class)
     public void createInstructionBadSettlementDateTest() {
-        this.create()
+        this.createInstruction()
             .settlementDate("01 JAN 2016");
     }
     
     @Test (expected = DtreException.class)
     public void createInstructionBadUnitsTest() {
-        this.create()
+        this.createInstruction()
             .units(0);
     }
     
     @Test (expected = DtreException.class)
     public void createInstructionBadUnitPriceTest() {
-        this.create()
+        this.createInstruction()
             .unitPrice("BOGUS");
     }
     
     @Test 
     public void isSettleableTest() {
-        Instruction instruction = this.create()
+        Instruction instruction = this.createInstruction()
             .settlementDate("01 Jan 2016");
         assertEquals(LocalDate.parse("2016-01-01"), instruction.calculateEffectiveSettlementDate());
         assertTrue(instruction.isSettleable());
@@ -130,7 +130,7 @@ public class InstructionTest {
     
     @Test 
     public void isNotSettleableTest() {
-        Instruction instruction = this.create()
+        Instruction instruction = this.createInstruction()
             .settlementDate("01 Dec 2016");
         assertEquals(LocalDate.parse("2016-12-01"), instruction.calculateEffectiveSettlementDate());
         assertFalse(instruction.isSettleable());
@@ -138,15 +138,16 @@ public class InstructionTest {
     
     @Test 
     public void settlementAmountTestOnWorkingDay() {
-        Instruction instruction = this.create()
+        Instruction instruction = this.createInstruction()
             .settlementDate("01 Jan 2016");
         this.assertSettlementTest(instruction, "2016-01-01", "10025.00");
     }
     
     @Test 
     public void settlementAmountNextWorkingDayTest() {
-        Instruction instruction = this.create();
-        this.assertSettlementTest(instruction, "2016-01-04", "10025.00");
+        Instruction instruction = this.createInstruction()
+            .unitPrice("150.5");
+        this.assertSettlementTest(instruction, "2016-01-04", "15050.00");
     }
     
     /**
@@ -191,7 +192,7 @@ public class InstructionTest {
      * @param units 
      */
     private void assertSettlementAmountRoundingTest(String expectedSettledAmount, String agreedFx, String unitPrice, int units) {
-        Instruction instruction = this.create()
+        Instruction instruction = this.createInstruction()
             .settlementDate("01 Jan 2016")
             .agreedFx(agreedFx)
             .unitPrice(unitPrice)
@@ -201,41 +202,41 @@ public class InstructionTest {
     
     @Test
     public void firstUnsettledSecondSettledCompareTest() {
-        Instruction instruction1 = this.create(); 
-        Instruction instruction2 = this.create();
+        Instruction instruction1 = this.createInstruction(); 
+        Instruction instruction2 = this.createInstruction();
         instruction2.settle();
-        assertEquals(-1, instruction1.compareTo(instruction2));
+        assertEquals(1, instruction1.compareTo(instruction2));
     }
     
     @Test
     public void firstUnsettledSecondUnettledCompareTest() {
-        Instruction instruction1 = this.create(); 
-        Instruction instruction2 = this.create();
+        Instruction instruction1 = this.createInstruction(); 
+        Instruction instruction2 = this.createInstruction();
         assertEquals(0, instruction1.compareTo(instruction2));
     }
     
     @Test
     public void firstSettledSecondUnsettledCompareTest() {
-        Instruction instruction1 = this.create(); 
+        Instruction instruction1 = this.createInstruction(); 
         instruction1.settle();
-        Instruction instruction2 = this.create();
-        assertEquals(1, instruction1.compareTo(instruction2));
-    }
-    
-    @Test
-    public void firstSettledAmountLessThanSecondTest() {
-        Instruction instruction1 = this.create()
-            .units(1); 
-        Instruction instruction2 = this.create();
-        instruction1.settle();
-        instruction2.settle();
+        Instruction instruction2 = this.createInstruction();
         assertEquals(-1, instruction1.compareTo(instruction2));
     }
     
     @Test
+    public void firstSettledAmountLessThanSecondTest() {
+        Instruction instruction1 = this.createInstruction()
+            .units(1); 
+        Instruction instruction2 = this.createInstruction();
+        instruction1.settle();
+        instruction2.settle();
+        assertEquals(1, instruction1.compareTo(instruction2));
+    }
+    
+    @Test
     public void settledAmountsAreEqualTest() {
-        Instruction instruction1 = this.create();
-        Instruction instruction2 = this.create();
+        Instruction instruction1 = this.createInstruction();
+        Instruction instruction2 = this.createInstruction();
         instruction1.settle();
         instruction2.settle();
         assertEquals(0, instruction1.compareTo(instruction2));
@@ -243,20 +244,20 @@ public class InstructionTest {
     
     @Test
     public void firstSettledAmountGreaterThanSecondTest() {
-        Instruction instruction1 = this.create()
+        Instruction instruction1 = this.createInstruction()
             .units(1000); 
-        Instruction instruction2 = this.create();
+        Instruction instruction2 = this.createInstruction();
         instruction1.settle();
         instruction2.settle();
-        assertEquals(1, instruction1.compareTo(instruction2));
+        assertEquals(-1, instruction1.compareTo(instruction2));
     }
     
     /**
      * Create a {@link Instruction} instance.
      * @return 
      */
-    private Instruction create() {
-        return this.create(
+    private Instruction createInstruction() {
+        return createInstruction(
             "foo",
             "B",
             "0.50",
@@ -279,7 +280,7 @@ public class InstructionTest {
      * @param unitPriceString
      * @return 
      */
-    private Instruction create(
+    static Instruction createInstruction(
             String entity, 
             String buySell, 
             String agreedFx, 
@@ -297,8 +298,8 @@ public class InstructionTest {
             .settlementDate(settlementDateString)
             .units(units)
             .unitPrice(unitPriceString)
-            .clock(Clock.fixed(Instant.parse("2016-02-01T00:00:00Z"), ZoneOffset.UTC))
-            .workingWeek(new WorkingWeek(DEFAULT_CURRENCY_TO_WORKING_WEEK_MAP))
+            .clock(CLOCK)
+            .workingWeek(DEFAULT_WORKING_WEEK)
             ;
     }
     

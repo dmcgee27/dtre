@@ -5,15 +5,16 @@
  * Copyright 2018 (c) DMG27 Ltd.
  *
  */
-package com.dmg27.dtre.core;
+package com.dmg27.dtre.trade;
 
+import com.dmg27.dtre.core.DtreException;
+import static com.dmg27.dtre.trade.WorkingWeekConstants.*;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Currency;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
@@ -23,26 +24,6 @@ import org.junit.Test;
  * @author douglasmcgee
  */
 public class WorkingWeekTest {
-    
-    private static final String CURRENCY_CODE_AED = "AED";
-    private static final String CURRENCY_CODE_GBP = "GBP";
-    private static final String CURRENCY_CODE_SAR = "SAR";
-    
-    private static final List<DayOfWeek> SUNDAY_TO_THURSDAY = Arrays.asList(
-        new DayOfWeek [] {
-            DayOfWeek.SUNDAY,
-            DayOfWeek.MONDAY,
-            DayOfWeek.TUESDAY,
-            DayOfWeek.WEDNESDAY,
-            DayOfWeek.THURSDAY
-        }
-    );
-    
-    private static final Map<String, List<DayOfWeek>> DEFAULT_CURRENCY_TO_WORKING_WEEK_MAP = new HashMap<>();
-    static {
-        DEFAULT_CURRENCY_TO_WORKING_WEEK_MAP.put(CURRENCY_CODE_AED, SUNDAY_TO_THURSDAY);
-        DEFAULT_CURRENCY_TO_WORKING_WEEK_MAP.put(CURRENCY_CODE_SAR, SUNDAY_TO_THURSDAY);
-    };
     
     @Test
     public void mondayToFridayGetWorkingWeekTest() {
@@ -100,17 +81,40 @@ public class WorkingWeekTest {
     }
     
     @Test
-    public void mondayToFridayGetFirstWorkingDayOfWeekTest() {
+    public void mondayToFridayGetFirstWorkingDayOfWeekTest01() {
+        assertEquals(DayOfWeek.MONDAY, this.createDefaultWorkingWeek().getFirstWorkingDayOfWeek(CURRENCY_CODE_ALL));
+    }
+    
+    @Test
+    public void mondayToFridayGetFirstWorkingDayOfWeekTest02() {
         assertEquals(DayOfWeek.MONDAY, this.createDefaultWorkingWeek().getFirstWorkingDayOfWeek(CURRENCY_CODE_GBP));
     }
     
     @Test
-    public void sundayToThursdayGetFirstWorkingDayOfWeekTest() {
+    public void sundayToThursdayGetFirstWorkingDayOfWeekTest01() {
         assertEquals(DayOfWeek.SUNDAY, this.createDefaultWorkingWeek().getFirstWorkingDayOfWeek(CURRENCY_CODE_AED));
     }
     
     @Test
-    public void mondayToFridayGetNextWorkingDateTest() {
+    public void sundayToThursdayGetFirstWorkingDayOfWeekTest02() {
+        assertEquals(DayOfWeek.SUNDAY, this.createDefaultWorkingWeek().getFirstWorkingDayOfWeek(CURRENCY_CODE_SAR));
+    }
+    
+    @Test
+    public void mondayToFridayGetWorkingDateTest01() {
+        this.assertMondayToFridayGetWorkingDate(CURRENCY_CODE_ALL);
+    }
+    
+    @Test
+    public void mondayToFridayGetWorkingDateTest02() {
+        this.assertMondayToFridayGetWorkingDate(CURRENCY_CODE_GBP);
+    }
+    
+    /**
+     * Assert the working dates for a working week from Monday to Friday.
+     * @param currencyCode 
+     */
+    private void assertMondayToFridayGetWorkingDate(String currencyCode) {
         List<LocalDate> workingDates = Arrays.asList(
             new LocalDate[] {
                 LocalDate.parse("2018-06-25"),
@@ -145,11 +149,24 @@ public class WorkingWeekTest {
             }
         );
         
-        this.assertNextWorkingDate(CURRENCY_CODE_GBP, expectedWorkingDates, workingDates, expectedNextWorkingDates, nonWorkingDates);
+        this.assertNextWorkingDate(currencyCode, expectedWorkingDates, workingDates, expectedNextWorkingDates, nonWorkingDates);
     }
     
     @Test
-    public void sundayToThursdayGetNextWorkingDateTest() {
+    public void sundayToThursdayGetWorkingDateTest01() {
+        this.assertSundayToThursdayGetWorkingDate(CURRENCY_CODE_AED);
+    }
+    
+    @Test
+    public void sundayToThursdayGetWorkingDateTest02() {
+        this.assertSundayToThursdayGetWorkingDate(CURRENCY_CODE_SAR);
+    }
+    
+    /**
+     * Assert the working dates for a working week from Sunday to Thursday.
+     * @param currencyCode 
+     */
+    private void assertSundayToThursdayGetWorkingDate(String currencyCode) {
         List<LocalDate> workingDates = Arrays.asList(
             new LocalDate[] {
                 LocalDate.parse("2018-06-24"),
@@ -184,7 +201,7 @@ public class WorkingWeekTest {
             }
         );
         
-        this.assertNextWorkingDate(CURRENCY_CODE_AED, expectedWorkingDates, workingDates, expectedNextWorkingDates, nonWorkingDates);
+        this.assertNextWorkingDate(currencyCode, expectedWorkingDates, workingDates, expectedNextWorkingDates, nonWorkingDates);
     }
     
     @Test (expected = DtreException.class)
@@ -212,7 +229,7 @@ public class WorkingWeekTest {
      * @return The {@link WorkingWeek} instance.
      */
     private WorkingWeek createDefaultWorkingWeek() {
-        return new WorkingWeek(DEFAULT_CURRENCY_TO_WORKING_WEEK_MAP);
+        return DEFAULT_WORKING_WEEK;
     }
     
     /**

@@ -5,8 +5,9 @@
  * Copyright 2018 (c) DMG27 Ltd.
  *
  */
-package com.dmg27.dtre.core;
+package com.dmg27.dtre.trade;
 
+import com.dmg27.dtre.core.DtreException;
 import com.dmg27.dtre.util.Util;
 import java.time.DayOfWeek;
 import java.time.LocalDate;

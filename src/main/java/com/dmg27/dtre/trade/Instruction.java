@@ -5,8 +5,10 @@
  * Copyright 2018 (c) DMG27 Ltd.
  *
  */
-package com.dmg27.dtre.core;
+package com.dmg27.dtre.trade;
 
+import com.dmg27.dtre.core.BuySell;
+import com.dmg27.dtre.core.DtreException;
 import com.dmg27.dtre.util.Util;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -15,6 +17,7 @@ import java.time.Clock;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -44,6 +47,19 @@ final public class Instruction implements Comparable {
     private Optional<BigDecimal> settledAmount = Optional.empty();
     
     private WorkingWeek workingWeek;
+    
+    static final int NO_ID = -1;
+    
+    private int id = NO_ID;
+    
+    public Instruction id(int id) {
+        this.id = id;
+        return this;
+    }
+    
+    int getId() {
+        return this.id;
+    }
     
     public Instruction entity(String entity) {
         this.entity = entity;
@@ -76,7 +92,7 @@ final public class Instruction implements Comparable {
         }
     }
 
-    public BigDecimal getAgreedFx() {
+    BigDecimal getAgreedFx() {
         return agreedFx;
     }
     
@@ -86,7 +102,7 @@ final public class Instruction implements Comparable {
         return this;
     }
 
-    public String getCurrencyCode() {
+    String getCurrencyCode() {
         return currencyCode;
     }
     
@@ -188,7 +204,7 @@ final public class Instruction implements Comparable {
     public int compareTo(Object o) {
         Instruction other = (Instruction) o;
         if (!this.isSettled() && other.isSettled()) {
-            return -1;
+            return 1;
         }
         
         if (!this.isSettled() && !other.isSettled()) {
@@ -196,9 +212,40 @@ final public class Instruction implements Comparable {
         }
         
         if (this.isSettled() && !other.isSettled()) {
-            return 1;
+            return -1;
         }
         
-        return this.settledAmount.get().compareTo(other.settledAmount.get());
+        return other.settledAmount.get().compareTo(this.settledAmount.get());
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 89 * hash + Objects.hashCode(this.entity);
+        hash = 89 * hash + Objects.hashCode(this.currencyCode);
+        hash = 89 * hash + this.id;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Instruction other = (Instruction) obj;
+        if (this.id == NO_ID && other.id == NO_ID) {
+            return false;
+        }
+        if (this.id != other.id) {
+            return false;
+        }
+        return true;
+    }
+    
 }
