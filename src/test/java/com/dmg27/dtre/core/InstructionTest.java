@@ -200,11 +200,55 @@ public class InstructionTest {
     }
     
     @Test
-    @Ignore
-    public void firstUnsettledSecondSettledCompare() {
+    public void firstUnsettledSecondSettledCompareTest() {
         Instruction instruction1 = this.create(); 
         Instruction instruction2 = this.create();
         instruction2.settle();
+        assertEquals(-1, instruction1.compareTo(instruction2));
+    }
+    
+    @Test
+    public void firstUnsettledSecondUnettledCompareTest() {
+        Instruction instruction1 = this.create(); 
+        Instruction instruction2 = this.create();
+        assertEquals(0, instruction1.compareTo(instruction2));
+    }
+    
+    @Test
+    public void firstSettledSecondUnsettledCompareTest() {
+        Instruction instruction1 = this.create(); 
+        instruction1.settle();
+        Instruction instruction2 = this.create();
+        assertEquals(1, instruction1.compareTo(instruction2));
+    }
+    
+    @Test
+    public void firstSettledAmountLessThanSecondTest() {
+        Instruction instruction1 = this.create()
+            .units(1); 
+        Instruction instruction2 = this.create();
+        instruction1.settle();
+        instruction2.settle();
+        assertEquals(-1, instruction1.compareTo(instruction2));
+    }
+    
+    @Test
+    public void settledAmountsAreEqualTest() {
+        Instruction instruction1 = this.create();
+        Instruction instruction2 = this.create();
+        instruction1.settle();
+        instruction2.settle();
+        assertEquals(0, instruction1.compareTo(instruction2));
+    }
+    
+    @Test
+    public void firstSettledAmountGreaterThanSecondTest() {
+        Instruction instruction1 = this.create()
+            .units(1000); 
+        Instruction instruction2 = this.create();
+        instruction1.settle();
+        instruction2.settle();
+        assertEquals(1, instruction1.compareTo(instruction2));
     }
     
     /**
