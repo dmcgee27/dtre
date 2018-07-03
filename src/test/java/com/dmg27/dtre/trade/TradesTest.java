@@ -710,6 +710,199 @@ public class TradesTest {
                 StubbedInstructionsTests.assertTradesRank(trades.getTrades(), expectedIds);
             }
         }
+        
+        @Test
+        public void tradesReportTest() {
+            
+            MockInstructionConfig[] config = new MockInstructionConfig[] {
+                new MockInstructionConfig(BAR, BuySell.B, MON_04_JAN_2016, "6000"), // 0
+                new MockInstructionConfig(CAR, BuySell.S, MON_04_JAN_2016, "5000"), // 1
+                new MockInstructionConfig(FOO, BuySell.S, MON_04_JAN_2016, "4000"), // 2
+                new MockInstructionConfig(GLA, BuySell.B, MON_04_JAN_2016, "3000"), // 3
+                new MockInstructionConfig(GLA, BuySell.B, MON_04_JAN_2016, "3001"), // 4
+                new MockInstructionConfig(GLA, BuySell.S, MON_04_JAN_2016, "3002"), // 5
+                new MockInstructionConfig(LAM, BuySell.B, MON_04_JAN_2016, "2000"), // 6
+                new MockInstructionConfig(LAM, BuySell.B, MON_04_JAN_2016, "2001"), // 7
+                new MockInstructionConfig(LAM, BuySell.S, MON_04_JAN_2016, "2002"), // 8
+                new MockInstructionConfig(WIN, BuySell.B, MON_04_JAN_2016, "1000"), // 9
+                
+                new MockInstructionConfig(BAR, BuySell.B, TUE_05_JAN_2016, "6000"), // 10
+                new MockInstructionConfig(CAR, BuySell.S, TUE_05_JAN_2016, "5000"), // 11
+                new MockInstructionConfig(FOO, BuySell.S, TUE_05_JAN_2016, "4000"), // 12
+                new MockInstructionConfig(GLA, BuySell.B, TUE_05_JAN_2016, "3000"), // 13
+                new MockInstructionConfig(GLA, BuySell.B, TUE_05_JAN_2016, "3001"), // 14
+                new MockInstructionConfig(GLA, BuySell.S, TUE_05_JAN_2016, "3002"), // 15
+                new MockInstructionConfig(LAM, BuySell.B, TUE_05_JAN_2016, "2000"), // 16
+                new MockInstructionConfig(LAM, BuySell.B, TUE_05_JAN_2016, "2001"), // 17
+                new MockInstructionConfig(LAM, BuySell.S, TUE_05_JAN_2016, "2002"), // 18
+                
+                new MockInstructionConfig(BAR, BuySell.B, WED_06_JAN_2016, "6000"), // 19
+                new MockInstructionConfig(CAR, BuySell.S, WED_06_JAN_2016, "5000"), // 20
+                new MockInstructionConfig(FOO, BuySell.S, WED_06_JAN_2016, "4000"), // 21
+                new MockInstructionConfig(GLA, BuySell.B, WED_06_JAN_2016, "3000"), // 22
+                new MockInstructionConfig(GLA, BuySell.B, WED_06_JAN_2016, "3001"), // 23
+                new MockInstructionConfig(GLA, BuySell.S, WED_06_JAN_2016, "3002"), // 24
+                
+                new MockInstructionConfig(BAR, BuySell.B, THU_07_JAN_2016, "6000"), // 25
+                new MockInstructionConfig(CAR, BuySell.S, THU_07_JAN_2016, "5000"), // 26
+                new MockInstructionConfig(FOO, BuySell.S, THU_07_JAN_2016, "4000"), // 27
+                
+                new MockInstructionConfig(BAR, BuySell.B, FRI_08_JAN_2016, "6000"), // 28
+                new MockInstructionConfig(CAR, BuySell.S, FRI_08_JAN_2016, "5000"), // 29
+            };
+            List<Instruction> instructions = InstructionFactory.create(config);
+            
+            LocalDate from = LocalDate.parse(SUN_03_JAN_2016);
+            LocalDate to = LocalDate.parse(SAT_09_JAN_2016);
+            for (LocalDate date = from; !date.isAfter(to); date = date.plusDays(1)) {
+                Trades trades = StubbedInstructionsTests.createSettledTrades(instructions, date);
+                assertReportOneDayOfTrades(trades, date);
+            }
+        }
+        
+        /**
+         * Assert one day of trades as if being reported.
+         * @param trades
+         * @param date 
+         */
+        private void assertReportOneDayOfTrades(Trades trades, LocalDate date) {
+            if (LocalDate.parse(SUN_03_JAN_2016).equals(date)) {
+                this.assertReportOneDayOfTrades(
+                    trades, 
+                    date, 
+                    new String[] {},
+                    new String[] {}, // highest
+                    new String[] {}, // out / buy
+                    new String[] {}, // in / sell
+                    "0.00",
+                    "0.00"
+                    );
+            } else if (LocalDate.parse(MON_04_JAN_2016).equals(date)) {
+                this.assertReportOneDayOfTrades(
+                    trades, 
+                    date, 
+                    new String[] {     BAR,        CAR,       FOO,       GLA,       LAM,      WIN},
+                    new String[] {"6000.00", "5000.00", "4000.00", "3002.00", "2002.00", "1000.00"}, // highest
+                    new String[] {"6000.00",    "0.00",    "0.00", "6001.00", "4001.00", "1000.00"}, // out / buy
+                    new String[] {   "0.00", "5000.00", "4000.00", "3002.00", "2002.00",    "0.00"}, // in / sell
+                    "17002.00",
+                    "14004.00"
+                    );
+            } else if (LocalDate.parse(TUE_05_JAN_2016).equals(date)) {
+                this.assertReportOneDayOfTrades(
+                    trades, 
+                    date, 
+                    new String[] {     BAR,        CAR,      FOO,        GLA,      LAM},
+                    new String[] {"6000.00", "5000.00", "4000.00", "3002.00", "2002.00"}, // highest
+                    new String[] {"6000.00",    "0.00",    "0.00", "6001.00", "4001.00"}, // out / buy
+                    new String[] {   "0.00", "5000.00", "4000.00", "3002.00", "2002.00"}, // in / sell
+                    "16002.00",
+                    "14004.00"
+                    );
+            } else if (LocalDate.parse(WED_06_JAN_2016).equals(date)) {
+                this.assertReportOneDayOfTrades(
+                    trades, 
+                    date, 
+                    new String[] {      BAR,       CAR,       FOO,       GLA},
+                    new String[] {"6000.00", "5000.00", "4000.00", "3002.00"}, // highest
+                    new String[] {"6000.00",    "0.00",    "0.00", "6001.00"}, // out / buy
+                    new String[] {   "0.00", "5000.00", "4000.00", "3002.00"}, // in / sell
+                    "12001.00",
+                    "12002.00"
+                    );
+            } else if (LocalDate.parse(THU_07_JAN_2016).equals(date)) {
+                this.assertReportOneDayOfTrades(
+                    trades, 
+                    date, 
+                    new String[] {     BAR,        CAR,      FOO},
+                    new String[] {"6000.00", "5000.00", "4000.00"}, // highest
+                    new String[] {"6000.00",    "0.00",    "0.00"}, // out / buy
+                    new String[] {   "0.00", "5000.00", "4000.00"}, // in / sell
+                    "6000.00",
+                    "9000.00"
+                    );
+            } else if (LocalDate.parse(FRI_08_JAN_2016).equals(date)) {
+                this.assertReportOneDayOfTrades(
+                    trades, 
+                    date, 
+                    new String[] {     BAR,        CAR},
+                    new String[] {"6000.00", "5000.00"}, // highest
+                    new String[] {"6000.00",    "0.00"}, // out / buy
+                    new String[] {   "0.00", "5000.00"}, // in / sell
+                    "6000.00",
+                    "5000.00"
+                    );
+            } else if (LocalDate.parse(SAT_09_JAN_2016).equals(date)) {
+                this.assertReportOneDayOfTrades(
+                    trades, 
+                    date, 
+                    new String[] {},
+                    new String[] {}, // highest
+                    new String[] {}, // out / buy
+                    new String[] {}, // in / sell
+                    "0.00",
+                    "0.00"
+                    );
+            } else {
+            }
+        }
+        
+        /**
+         * Assert one day of trades as if being reported.
+         * @param trades
+         * @param date
+         * @param expectedEntity
+         * @param expectedhighestSettlementAmount
+         * @param expectedTotalOutOnFor
+         * @param expectedTotalInOnFor
+         * @param expectedTotalOut
+         * @param expectedTotalIn 
+         */
+        private void assertReportOneDayOfTrades(
+                Trades trades, 
+                LocalDate date,
+                String[] expectedEntity, 
+                String[] expectedhighestSettlementAmount,
+                String[] expectedTotalOutOnFor,
+                String[] expectedTotalInOnFor,
+                String expectedTotalOut,
+                String expectedTotalIn) {
+            
+            // The instructiosn are already ranked for entity with highest settlement aount.
+            List<Instruction> instructions = trades.getTrades();
+            String lastEntity = null;
+            for (int i = 0, j = -1; i < instructions.size(); i++) {
+                // Report one row per entity per day.
+                Instruction ins = instructions.get(i);
+                String entity = ins.getEntity();
+                if (entity.equals(lastEntity)) {
+                    continue;
+                }
+                
+                ++j;
+                lastEntity = entity;
+                assertEquals(expectedEntity[j], entity);
+                
+                // Total trades in and out for the enity on the day.
+                BigDecimal totalOutOnFor = trades.getTotalSettledOutgoingOnAndFor(date, entity);
+                BigDecimal totalInOnFor = trades.getTotalSettledIncommingOnAndFor(date, entity);
+                assertEquals(new BigDecimal(expectedTotalOutOnFor[j]), totalOutOnFor);
+                assertEquals(new BigDecimal(expectedTotalInOnFor[j]), totalInOnFor);
+                
+                // TODO Fix the mock so that it can get the max settlement amount.
+                // Get the highest settlement amount for the entity on the day.
+//                Optional<BigDecimal> highestSettlementAmount = trades.getTradesOnAndFor(date, Optional.of(entity))..stream()
+//                    .max(Comparator.naturalOrder());
+//                assertTrue(highestSettlementAmount.isPresent());
+//                assertEquals(new BigDecimal(expectedhighestSettlementAmount[j]), highestSettlementAmount.get());
+            }
+
+            // Totals trades for all entities in and out on the day.
+            BigDecimal totalOut = trades.getTotalSettledOutgoingOn(date);
+            BigDecimal totalIn = trades.getTotalSettledIncommingOn(date);
+            assertEquals(new BigDecimal(expectedTotalOut), totalOut);
+            assertEquals(new BigDecimal(expectedTotalIn), totalIn);
+        }
     }
     
     /**
