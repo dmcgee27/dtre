@@ -11,7 +11,6 @@ import com.dmg27.dtre.core.BuySell;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -26,7 +25,7 @@ final public class Trades {
     
     private WorkingWeek workingWeek;
     
-    public Trades tradesCltn(List<Instruction> tradesCltn) {
+    public Trades trades(List<Instruction> tradesCltn) {
         this.tradesCltn = tradesCltn;
         int id = 0;
         for (Instruction instruction : this.tradesCltn) {
@@ -36,20 +35,18 @@ final public class Trades {
         return this;
     }
 
-    List<Instruction> getTradesCltn() {
+    List<Instruction> getTrades() {
         return tradesCltn;
     }
     
     public List<Instruction> getTradesOn(LocalDate date) {
-        List<Instruction> result = this.tradesCltn.stream()
-            .filter(i -> date.equals(i.calculateEffectiveSettlementDate()))
-            .collect(Collectors.toList());
-        return result;
+        return this.getTradesOnAndFor(date, Optional.empty());
     }
     
-    public List<Instruction> getTradesSorted(List<Instruction> trades) {
-        List<Instruction> result = trades.stream()
-            .sorted()
+    public List<Instruction> getTradesOnAndFor(LocalDate date, Optional<String> entity) {
+        List<Instruction> result = this.tradesCltn.stream()
+            .filter(i -> date.equals(i.getEffectiveSettlementDate()) 
+                && (entity.isPresent() ? entity.get().equals(i.getEntity()) : true))
             .collect(Collectors.toList());
         return result;
     }
@@ -63,17 +60,22 @@ final public class Trades {
         return this.workingWeek;
     }
     
-    public void settle() {
-        this.settle(this.tradesCltn);
+    public Trades settle() {
+        this.tradesCltn = this.settle(this.tradesCltn);
+        return this;
     }
     
-    public void settleOn(LocalDate date) {
-        this.settle(this.getTradesOn(date));
+    public Trades settle(LocalDate date) {
+        this.tradesCltn = this.settle(this.getTradesOn(date));
+        return this;
     }
     
-    public void settle(List<Instruction> trades) {
+    public List<Instruction> settle(List<Instruction> trades) {
         trades.stream()
             .forEach(Instruction::settle);
+        return trades.stream()
+            .sorted()
+            .collect(Collectors.toList());
     }
     
     public BigDecimal getTotalSettledIncommingOn(LocalDate date) {
@@ -93,10 +95,8 @@ final public class Trades {
     }
     
     BigDecimal getTotalSettledOnAndFor(BuySell buySell, LocalDate date, Optional<String> entity) {
-        List<BigDecimal> settlementAmounts = this.tradesCltn.stream()
-            .filter(i -> (date.equals(i.calculateEffectiveSettlementDate()) 
-                && (entity.isPresent() ? entity.get().equals(i.getEntity()) : true)
-                && i.getBuySell() == buySell))
+        List<BigDecimal> settlementAmounts = this.getTradesOnAndFor(date, entity).stream()
+            .filter(i -> i.getBuySell() == buySell)
             .map(i -> i.getSettledAmount())
             .filter(o -> o.isPresent())
             .map(o -> o.get())
@@ -109,6 +109,5 @@ final public class Trades {
         
         return settled;
     }
-    
     
 }

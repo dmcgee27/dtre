@@ -129,7 +129,7 @@ final public class Instruction implements Comparable {
     }
 
     public LocalDate getSettlementDate() {
-        return settlementDate;
+        return this.settlementDate;
     }
     
     public Instruction units(int units) {
@@ -180,13 +180,13 @@ final public class Instruction implements Comparable {
         return this.settledAmount;
     }
     
-    boolean isSettleable() {
-        LocalDate effectiveSettlementDate = this.calculateEffectiveSettlementDate();
+    public boolean isSettleable() {
+        LocalDate effectiveSettlementDate = this.getEffectiveSettlementDate();
         LocalDate now = LocalDate.now(this.clock);
         return !effectiveSettlementDate.isAfter(now);
     }
     
-    LocalDate calculateEffectiveSettlementDate() {
+    public LocalDate getEffectiveSettlementDate() {
         LocalDate effectiveSettlementDate = this.workingWeek.getWorkingDate(this.currencyCode, this.settlementDate);
         return effectiveSettlementDate;
     }
@@ -215,7 +215,7 @@ final public class Instruction implements Comparable {
             return -1;
         }
         
-        return other.settledAmount.get().compareTo(this.settledAmount.get());
+        return other.getSettledAmount().get().compareTo(this.getSettledAmount().get());
     }
 
     @Override

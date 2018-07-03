@@ -124,7 +124,7 @@ public class InstructionTest {
     public void isSettleableTest() {
         Instruction instruction = this.createInstruction()
             .settlementDate("01 Jan 2016");
-        assertEquals(LocalDate.parse("2016-01-01"), instruction.calculateEffectiveSettlementDate());
+        assertEquals(LocalDate.parse("2016-01-01"), instruction.getEffectiveSettlementDate());
         assertTrue(instruction.isSettleable());
     }
     
@@ -132,7 +132,7 @@ public class InstructionTest {
     public void isNotSettleableTest() {
         Instruction instruction = this.createInstruction()
             .settlementDate("01 Dec 2016");
-        assertEquals(LocalDate.parse("2016-12-01"), instruction.calculateEffectiveSettlementDate());
+        assertEquals(LocalDate.parse("2016-12-01"), instruction.getEffectiveSettlementDate());
         assertFalse(instruction.isSettleable());
     }
     
@@ -157,7 +157,7 @@ public class InstructionTest {
      * @param expectedSettledAmount 
      */
     private void assertSettlementTest(Instruction instruction, String expectedSettlementDate, String expectedSettledAmount) {
-        assertEquals(LocalDate.parse(expectedSettlementDate), instruction.calculateEffectiveSettlementDate());
+        assertEquals(LocalDate.parse(expectedSettlementDate), instruction.getEffectiveSettlementDate());
         assertTrue(instruction.isSettleable());
         assertFalse(instruction.isSettled());
         instruction.settle();
@@ -298,7 +298,7 @@ public class InstructionTest {
             .settlementDate(settlementDateString)
             .units(units)
             .unitPrice(unitPriceString)
-            .clock(CLOCK)
+            .clock(CLOCK_MON_01_FEB_2016)
             .workingWeek(DEFAULT_WORKING_WEEK)
             ;
     }

@@ -27,6 +27,16 @@ final public class WorkingWeekConstants {
     static final String CURRENCY_CODE_SAR = "SAR";
     static final String CURRENCY_CODE_SGD = "SGD";
     
+    static final List<DayOfWeek> MONDAY_TO_FRIDAY = Arrays.asList(
+        new DayOfWeek [] {
+            DayOfWeek.MONDAY,
+            DayOfWeek.TUESDAY,
+            DayOfWeek.WEDNESDAY,
+            DayOfWeek.THURSDAY,
+            DayOfWeek.FRIDAY
+        }
+    );
+    
     static final List<DayOfWeek> SUNDAY_TO_THURSDAY = Arrays.asList(
         new DayOfWeek [] {
             DayOfWeek.SUNDAY,
@@ -45,5 +55,25 @@ final public class WorkingWeekConstants {
     
     static final WorkingWeek DEFAULT_WORKING_WEEK = new WorkingWeek(DEFAULT_CURRENCY_TO_WORKING_WEEK_MAP);
     
-    static final Clock CLOCK = Clock.fixed(Instant.parse("2016-02-01T00:00:00Z"), ZoneOffset.UTC);
+    static final Clock CLOCK_MON_01_FEB_2016 = Clock.fixed(Instant.parse("2016-02-01T00:00:00Z"), ZoneOffset.UTC);
+    
+    static final String SAT_02_JAN_2016 = "2016-01-02";
+    static final String SAT_02_JAN_2016_JPM = "02 Jan 2016";
+    
+    static final String SUN_03_JAN_2016 = "2016-01-03"; 
+    static final String MON_04_JAN_2016 = "2016-01-04"; 
+    static final String TUE_05_JAN_2016 = "2016-01-05"; 
+    static final String WED_06_JAN_2016 = "2016-01-06"; 
+    static final String THU_07_JAN_2016 = "2016-01-07"; 
+    static final String THU_07_JAN_2016_JPM = "07 Jan 2016"; 
+    static final String FRI_08_JAN_2016 = "2016-01-08"; 
+    static final String SAT_09_JAN_2016 = "2016-01-09"; 
+    
+    static final String SAT_06_FEB_2016 = "2016-02-06";
+    static final String SAT_06_FEB_2016_JPM = "06 Feb 2016";
+    static final String MON_08_FEB_2016 = "2016-02-08";
+    static final String SAT_05_MAR_2016 = "2016-03-05";
+    static final String SAT_05_MAR_2016_JPM = "05 Mar 2016";
+    static final String MON_07_MAR_2016 = "2016-03-07";
 }
+    
