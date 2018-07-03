@@ -10,7 +10,7 @@ package com.dmg27.dtre.trade;
 import com.dmg27.dtre.core.BuySell;
 import com.dmg27.dtre.core.DtreException;
 import static com.dmg27.dtre.trade.Instruction.NO_ID;
-import static com.dmg27.dtre.trade.WorkingWeekConstants.*;
+import static com.dmg27.dtre.trade.WorkingWeekTestConstants.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import static org.junit.Assert.assertEquals;

@@ -9,7 +9,7 @@ package com.dmg27.dtre.trade;
 
 import com.dmg27.dtre.core.BuySell;
 import static com.dmg27.dtre.trade.InstructionTest.createInstruction;
-import static com.dmg27.dtre.trade.WorkingWeekConstants.*;
+import static com.dmg27.dtre.trade.WorkingWeekTestConstants.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;

@@ -8,7 +8,7 @@
 package com.dmg27.dtre.trade;
 
 import com.dmg27.dtre.core.DtreException;
-import static com.dmg27.dtre.trade.WorkingWeekConstants.*;
+import static com.dmg27.dtre.trade.WorkingWeekTestConstants.*;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.Arrays;

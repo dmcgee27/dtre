@@ -20,22 +20,12 @@ import java.util.Map;
  * Constants supporting used of the {@link WorkingWeek} class.
  * @author douglasmcgee
  */
-final public class WorkingWeekConstants {
+final public class WorkingWeekTestConstants {
     static final String CURRENCY_CODE_AED = "AED";
     static final String CURRENCY_CODE_ALL = "ALL";
     static final String CURRENCY_CODE_GBP = "GBP";
     static final String CURRENCY_CODE_SAR = "SAR";
     static final String CURRENCY_CODE_SGD = "SGD";
-    
-    static final List<DayOfWeek> MONDAY_TO_FRIDAY = Arrays.asList(
-        new DayOfWeek [] {
-            DayOfWeek.MONDAY,
-            DayOfWeek.TUESDAY,
-            DayOfWeek.WEDNESDAY,
-            DayOfWeek.THURSDAY,
-            DayOfWeek.FRIDAY
-        }
-    );
     
     static final List<DayOfWeek> SUNDAY_TO_THURSDAY = Arrays.asList(
         new DayOfWeek [] {
