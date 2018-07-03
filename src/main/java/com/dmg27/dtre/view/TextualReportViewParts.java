@@ -12,6 +12,7 @@ import com.dmg27.dtre.trade.Trades;
 import java.math.BigDecimal;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Formatter;
 import java.util.List;
 
@@ -23,9 +24,14 @@ import java.util.List;
 public class TextualReportViewParts extends AbstractReportViewParts {
     
     /**
+     * JPM date string format.
+     */
+    final private DateTimeFormatter DATE_FORMAT_JPM = DateTimeFormatter.ofPattern("dd MMM uuuu");
+    
+    /**
      * A horizontal line for the view.
      */
-    final private static String BOX_LINE = "===================================================================================================================================";
+    final private static String BOX_LINE = "================================================================";
     
     /**
      * Create an instance of {@link TextualReportViewParts}.
@@ -36,12 +42,15 @@ public class TextualReportViewParts extends AbstractReportViewParts {
     }
 
     @Override
-    String header() {
+    String header(LocalDate from, LocalDate to) {
         try (Formatter formatter = new Formatter()) {
             formatter.format(
-                    BOX_LINE + NL +
-                    "| Date           | Entity | Total Incomming | Total Outgoiing |" + NL +
-                    BOX_LINE + NL);
+                "Report for period from %-11.11s to %-11.11s" + NL +
+                BOX_LINE + NL +
+                "| Date            | Entity | Total Incomming | Total Outgoiing |" + NL +
+                BOX_LINE + NL,
+                from.format(DATE_FORMAT_JPM),
+                to.format(DATE_FORMAT_JPM));
             return formatter.toString();
         }
     }
@@ -54,7 +63,7 @@ public class TextualReportViewParts extends AbstractReportViewParts {
         
         // Create the per entity totals for the day.
         try (Formatter formatter = new Formatter()) {
-            String template = "| %3.3s %-10.10s | %3.3s | %-16.16s | %-16.16s |" + NL;
+            String template = "| %3.3s %-11.11s | %3.3s | %-15.15s | %-15.15s |" + NL;
 
             // The instructions are already ranked for entity with highest settlement aount.
             List<Instruction> instructions = trades.getTradesOn(date);
@@ -74,7 +83,7 @@ public class TextualReportViewParts extends AbstractReportViewParts {
             
                 formatter.format(template,
                     dayOfWeek,
-                    date,
+                    date.format(DATE_FORMAT_JPM),
                     entity,
                     totalInOnFor,
                     totalOutOnFor);
@@ -85,7 +94,10 @@ public class TextualReportViewParts extends AbstractReportViewParts {
         
         // Create the overal totals for the day.
         try (Formatter formatter = new Formatter()) {
-            String template = "| %3.3s %-10.10s |     | %-16.16s | %-16.16s |" + NL;            
+            String template = 
+                "|                 |--------|                 |                 |" + NL +
+                "| %3.3s %-11.11s | totals | %15.15s | %15.15s |" + NL +
+                "|                 |--------|                 |                 |" + NL;            
             
             // Totals trades for all entities in and out on the day.
             BigDecimal totalIn = trades.getTotalSettledIncommingOn(date);
@@ -93,7 +105,7 @@ public class TextualReportViewParts extends AbstractReportViewParts {
             
             formatter.format(template,
                 dayOfWeek,
-                date,
+                date.format(DATE_FORMAT_JPM),
                 totalIn,
                 totalOut);
             

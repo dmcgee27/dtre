@@ -51,9 +51,12 @@ abstract public class AbstractReportViewParts {
     }
     
     /**
+     * Create the view header.
+     * @param from The view period start.
+     * @param to The view period end.
      * @return The view header.
      */
-    abstract String header();
+    abstract String header(LocalDate from, LocalDate to);
     
     /**
      * @return A row for the view.

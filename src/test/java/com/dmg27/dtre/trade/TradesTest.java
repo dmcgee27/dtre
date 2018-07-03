@@ -328,7 +328,7 @@ public class TradesTest {
          * @param instructions
          * @return 
          */
-        static Trades createSettledTrades(List<Instruction> instructions) {
+        public static Trades createSettledTrades(List<Instruction> instructions) {
             return createUnsettledTrades(instructions)
                  .settle();
         }

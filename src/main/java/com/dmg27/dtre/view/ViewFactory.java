@@ -35,7 +35,7 @@ public class ViewFactory {
      * @return The trades view.
      */
     private static String createAccountTransactionsView(AbstractReportViewParts viewParts, LocalDate from, LocalDate to) {
-        StringBuilder sb = new StringBuilder(viewParts.header());
+        StringBuilder sb = new StringBuilder(viewParts.header(from, to));
         
         for (LocalDate date = from; !date.isAfter(to); date = date.plusDays(1)) {
             sb.append(viewParts.tradesPerDay(date));
