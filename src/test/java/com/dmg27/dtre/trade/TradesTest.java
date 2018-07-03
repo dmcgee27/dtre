@@ -339,9 +339,9 @@ public class TradesTest {
          * @param date
          * @return 
          */
-        static Trades createSettledTrades(List<Instruction> instructions, LocalDate date) {
+        static Trades createSettledTradesOn(List<Instruction> instructions, LocalDate date) {
             return createUnsettledTrades(instructions)
-                 .settle(date);
+                 .settleOn(date);
         }
 
         /**
@@ -631,7 +631,7 @@ public class TradesTest {
             LocalDate from = LocalDate.parse(SUN_03_JAN_2016);
             LocalDate to = LocalDate.parse(SAT_09_JAN_2016);
             for (LocalDate date = from; !date.isAfter(to); date = date.plusDays(1)) {
-                Trades trades = StubbedInstructionsTests.createSettledTrades(instructions, date);
+                Trades trades = StubbedInstructionsTests.createSettledTradesOn(instructions, date);
                 int[] expectedIds;
                 if (LocalDate.parse(SUN_03_JAN_2016).equals(date)) {
                     expectedIds = new int[] {};
@@ -688,7 +688,7 @@ public class TradesTest {
             LocalDate from = LocalDate.parse(SUN_03_JAN_2016);
             LocalDate to = LocalDate.parse(SAT_09_JAN_2016);
             for (LocalDate date = from; !date.isAfter(to); date = date.plusDays(1)) {
-                Trades trades = StubbedInstructionsTests.createSettledTrades(instructions, date);
+                Trades trades = StubbedInstructionsTests.createSettledTradesOn(instructions, date);
                 int[] expectedIds;
                 if (LocalDate.parse(SUN_03_JAN_2016).equals(date)) {
                     expectedIds = new int[] {};
@@ -755,7 +755,7 @@ public class TradesTest {
             LocalDate from = LocalDate.parse(SUN_03_JAN_2016);
             LocalDate to = LocalDate.parse(SAT_09_JAN_2016);
             for (LocalDate date = from; !date.isAfter(to); date = date.plusDays(1)) {
-                Trades trades = StubbedInstructionsTests.createSettledTrades(instructions, date);
+                Trades trades = StubbedInstructionsTests.createSettledTradesOn(instructions, date);
                 assertReportOneDayOfTrades(trades, date);
             }
         }

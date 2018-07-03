@@ -11,7 +11,6 @@ import com.dmg27.dtre.core.BuySell;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -66,7 +65,7 @@ final public class Trades {
         return this;
     }
     
-    public Trades settle(LocalDate date) {
+    public Trades settleOn(LocalDate date) {
         this.tradesCltn = this.settle(this.getTradesOn(date));
         return this;
     }
