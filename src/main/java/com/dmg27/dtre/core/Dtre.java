@@ -37,6 +37,11 @@ public class Dtre {
     private Clock clock = Clock.systemUTC();
     
     /**
+     * The trades instructions to report upon.
+     */
+    private List<Instruction> instructions;
+    
+    /**
      * The application's main method.
      * @param args Command line arguments.
      */
@@ -56,7 +61,19 @@ public class Dtre {
     }
     
     /**
-     * Execute a trades report..
+     * Set the instructions to report upon.
+     * @param instructions The instructions.
+     * @return this
+     */
+    public Dtre instructions(List<Instruction> instructions) {
+        this.instructions = instructions;
+        this.instructions.stream()
+            .forEach(i -> i.clock(this.clock));
+        return this;
+    }
+    
+    /**
+     * Execute a trades report with respect to the command line arguments.
      * @param args Command line arguments.
      */
     public void execute(String[] args) {
@@ -68,17 +85,25 @@ public class Dtre {
     }
     
     /**
-     * Execute a trades report..
+     * Execute a trades report with respect to the command line arguments.
      * @param args Command line arguments.
      */
     public void execute2(String[] args) {
-        // Create and settle some demo trades.
+        // Get the trade instructions
+        if (args.length == 0) {
+            LOGGER.info("Running in default demo mode with demo trade instructions for the report.");
+            this.instructions(createDemoInstructions());
+        } else {
+            throw new DtreException("there are no trade instructions to report");
+        }
+        
+        // Create and settle the trades.
         Trades trades = new Trades()
-            .trades(createDemoInstructions())
+            .trades(this.instructions)
             .workingWeek(DEMO_WORKING_WEEK)
             .settle();
         
-        // Show the report for demo trades.
+        // Show the report for trades.
         showReport(trades);
     }
     
@@ -120,45 +145,45 @@ public class Dtre {
     private static List<Instruction> createDemoInstructions() {
         
         List<Instruction> instructions = new ArrayList<>();
-        instructions.add(createInstruction("bar", "B", "0.22", "AED", "03 Jan 2016", "03 Jan 2016", 10, "150.5")); 
+        instructions.add(createInstruction("bar", "B", "0.22", "AED", "01 Jan 2018", "07 Jan 2018", 10, "150.5"));  // SUN
         
-        instructions.add(createInstruction("bar", "B", "0.22", "AED", "03 Jan 2016", "04 Jan 2016", 11, "150.5")); 
-        instructions.add(createInstruction("car", "S", "1.0", "USD", "04 Jan 2016", "04 Jan 2016", 5000, "1.0")); 
-        instructions.add(createInstruction("foo", "B", "0.5", "SGD", "03 Jan 2016", "04 Jan 2016", 20, "100.25")); 
-        instructions.add(createInstruction("gla", "B", "1.0", "USD", "04 Jan 2016", "04 Jan 2016", 3000, "1.0")); 
-        instructions.add(createInstruction("gla", "B", "1.0", "USD", "04 Jan 2016", "04 Jan 2020", 9999, "1.0")); 
-        instructions.add(createInstruction("gla", "B", "1.0", "USD", "04 Jan 2016", "04 Jan 2016", 3001, "1.0")); 
-        instructions.add(createInstruction("gla", "S", "1.0", "USD", "04 Jan 2016", "04 Jan 2016", 3002, "1.0")); 
-        instructions.add(createInstruction("lam", "B", "1.0", "USD", "04 Jan 2016", "04 Jan 2016", 2000, "1.0")); 
-        instructions.add(createInstruction("lam", "B", "1.0", "USD", "04 Jan 2016", "04 Jan 2016", 2001, "1.0")); 
-        instructions.add(createInstruction("lam", "S", "1.0", "USD", "04 Jan 2016", "04 Jan 2016", 2002, "1.0")); 
-        instructions.add(createInstruction("win", "B", "1.0", "USD", "04 Jan 2016", "04 Jan 2016", 1000, "1.0"));
-        
-        instructions.add(createInstruction("bar", "B", "0.22", "AED", "03 Jan 2016", "05 Jan 2016", 12, "150.5")); 
-        instructions.add(createInstruction("car", "S", "1.0", "USD", "04 Jan 2016", "05 Jan 2016", 5000, "1.0")); 
-        instructions.add(createInstruction("foo", "B", "0.5", "SGD", "03 Jan 2016", "05 Jan 2016", 21, "100.25")); 
-        instructions.add(createInstruction("gla", "B", "1.0", "USD", "04 Jan 2016", "05 Jan 2016", 3000, "1.0")); 
-        instructions.add(createInstruction("gla", "B", "1.0", "USD", "04 Jan 2016", "05 Jan 2016", 3001, "1.0")); 
-        instructions.add(createInstruction("gla", "S", "1.0", "USD", "04 Jan 2016", "05 Jan 2016", 3002, "1.0")); 
-        instructions.add(createInstruction("lam", "B", "1.0", "USD", "04 Jan 2016", "05 Jan 2016", 2000, "1.0")); 
-        instructions.add(createInstruction("lam", "B", "1.0", "USD", "04 Jan 2016", "05 Jan 2016", 2001, "1.0")); 
-        instructions.add(createInstruction("lam", "S", "1.0", "USD", "04 Jan 2016", "05 Jan 2016", 2002, "1.0")); 
-        
-        instructions.add(createInstruction("bar", "B", "0.22", "AED", "03 Jan 2016", "06 Jan 2016", 13, "150.5")); 
-        instructions.add(createInstruction("car", "S", "1.0", "USD", "04 Jan 2016", "06 Jan 2016", 5000, "1.0")); 
-        instructions.add(createInstruction("foo", "B", "0.5", "SGD", "03 Jan 2016", "06 Jan 2016", 22, "100.25")); 
-        instructions.add(createInstruction("gla", "B", "1.0", "USD", "04 Jan 2016", "06 Jan 2016", 3000, "1.0")); 
-        instructions.add(createInstruction("gla", "B", "1.0", "USD", "04 Jan 2016", "06 Jan 2016", 3001, "1.0")); 
-        instructions.add(createInstruction("gla", "S", "1.0", "USD", "04 Jan 2016", "06 Jan 2016", 3002, "1.0")); 
-        
-        instructions.add(createInstruction("bar", "B", "0.22", "AED", "03 Jan 2016", "07 Jan 2016", 14, "150.5")); 
-        instructions.add(createInstruction("car", "S", "1.0", "USD", "04 Jan 2016", "07 Jan 2016", 5000, "1.0")); 
-        instructions.add(createInstruction("foo", "B", "0.5", "SGD", "03 Jan 2016", "07 Jan 2016", 23, "100.25")); 
-        
-        instructions.add(createInstruction("bar", "B", "0.22", "AED", "03 Jan 2016", "08 Jan 2016", 15, "150.5")); 
-        instructions.add(createInstruction("car", "S", "1.0", "USD", "04 Jan 2016", "08 Jan 2016", 5000, "1.0")); 
-        
-        instructions.add(createInstruction("car", "S", "1.0", "USD", "04 Jan 2016", "09 Jan 2016", 5001, "1.0")); 
+        instructions.add(createInstruction("bar", "B", "0.22", "AED", "01 Jan 2018", "08 Jan 2018", 11, "150.5")); 
+        instructions.add(createInstruction("car", "S", "1.00", "USD", "01 Jan 2018", "08 Jan 2018", 5000, "1.0")); 
+        instructions.add(createInstruction("foo", "B", "0.50", "SGD", "01 Jan 2018", "08 Jan 2018", 20, "100.25")); 
+        instructions.add(createInstruction("gla", "B", "1.00", "USD", "01 Jan 2018", "08 Jan 2018", 3000, "1.0")); 
+        instructions.add(createInstruction("gla", "B", "1.00", "USD", "01 Jan 2019", "08 Jan 2019", 9999, "1.0")); // future
+        instructions.add(createInstruction("gla", "B", "1.00", "USD", "01 Jan 2018", "08 Jan 2018", 3001, "1.0")); 
+        instructions.add(createInstruction("gla", "S", "1.00", "USD", "01 Jan 2018", "08 Jan 2018", 3002, "1.0")); 
+        instructions.add(createInstruction("lam", "B", "1.00", "USD", "01 Jan 2018", "08 Jan 2018", 2000, "1.0")); 
+        instructions.add(createInstruction("lam", "B", "1.00", "USD", "01 Jan 2018", "08 Jan 2018", 2001, "1.0")); 
+        instructions.add(createInstruction("lam", "S", "1.00", "USD", "01 Jan 2018", "08 Jan 2018", 2002, "1.0")); 
+        instructions.add(createInstruction("win", "B", "1.00", "USD", "01 Jan 2018", "08 Jan 2018", 1000, "1.0"));
+
+        instructions.add(createInstruction("bar", "B", "0.22", "AED", "01 Jan 2018", "09 Jan 2018", 12, "150.5")); 
+        instructions.add(createInstruction("car", "S", "1.00", "USD", "01 Jan 2018", "09 Jan 2018", 5000, "1.0")); 
+        instructions.add(createInstruction("foo", "B", "0.50", "SGD", "01 Jan 2018", "09 Jan 2018", 21, "100.25")); 
+        instructions.add(createInstruction("gla", "B", "1.00", "USD", "01 Jan 2018", "09 Jan 2018", 3000, "1.0")); 
+        instructions.add(createInstruction("gla", "B", "1.00", "USD", "01 Jan 2018", "09 Jan 2018", 3001, "1.0")); 
+        instructions.add(createInstruction("gla", "S", "1.00", "USD", "01 Jan 2018", "09 Jan 2018", 3002, "1.0")); 
+        instructions.add(createInstruction("lam", "B", "1.00", "USD", "01 Jan 2018", "09 Jan 2018", 2000, "1.0")); 
+        instructions.add(createInstruction("lam", "B", "1.00", "USD", "01 Jan 2018", "09 Jan 2018", 2001, "1.0")); 
+        instructions.add(createInstruction("lam", "S", "1.00", "USD", "01 Jan 2018", "09 Jan 2018", 2002, "1.0")); 
+
+        instructions.add(createInstruction("bar", "B", "0.22", "AED", "01 Jan 2018", "10 Jan 2018", 13, "150.5")); 
+        instructions.add(createInstruction("car", "S", "1.00", "USD", "01 Jan 2018", "10 Jan 2018", 5000, "1.0")); 
+        instructions.add(createInstruction("foo", "B", "0.50", "SGD", "01 Jan 2018", "10 Jan 2018", 22, "100.25")); 
+        instructions.add(createInstruction("gla", "B", "1.00", "USD", "01 Jan 2018", "10 Jan 2018", 3000, "1.0")); 
+        instructions.add(createInstruction("gla", "B", "1.00", "USD", "01 Jan 2018", "10 Jan 2018", 3001, "1.0")); 
+        instructions.add(createInstruction("gla", "S", "1.00", "USD", "01 Jan 2018", "10 Jan 2018", 3002, "1.0")); 
+
+        instructions.add(createInstruction("bar", "B", "0.22", "AED", "01 Jan 2018", "11 Jan 2018", 14, "150.5")); 
+        instructions.add(createInstruction("car", "S", "1.00", "USD", "01 Jan 2018", "11 Jan 2018", 5000, "1.0")); 
+        instructions.add(createInstruction("foo", "B", "0.50", "SGD", "01 Jan 2018", "11 Jan 2018", 23, "100.25")); 
+
+        instructions.add(createInstruction("bar", "B", "0.22", "AED", "01 Jan 2018", "12 Jan 2018", 15, "150.5")); 
+        instructions.add(createInstruction("car", "S", "1.00", "USD", "01 Jan 2018", "12 Jan 2018", 5000, "1.0")); 
+
+        instructions.add(createInstruction("car", "S", "1.00", "USD", "01 Jan 2018", "13 Jan 2018", 5001, "1.0")); // SAT
         
         return instructions;
     }
