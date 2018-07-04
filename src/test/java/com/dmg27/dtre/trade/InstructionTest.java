@@ -10,6 +10,7 @@ package com.dmg27.dtre.trade;
 import com.dmg27.dtre.core.BuySell;
 import com.dmg27.dtre.core.DtreException;
 import static com.dmg27.dtre.trade.Instruction.NO_ID;
+import static com.dmg27.dtre.trade.WorkingWeek.*;
 import static com.dmg27.dtre.trade.WorkingWeekTestConstants.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -299,7 +300,7 @@ public class InstructionTest {
             .units(units)
             .unitPrice(unitPriceString)
             .clock(CLOCK_MON_01_FEB_2016)
-            .workingWeek(DEFAULT_WORKING_WEEK)
+            .workingWeek(DEMO_WORKING_WEEK)
             ;
     }
     

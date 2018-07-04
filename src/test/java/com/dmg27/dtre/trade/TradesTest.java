@@ -9,6 +9,7 @@ package com.dmg27.dtre.trade;
 
 import com.dmg27.dtre.core.BuySell;
 import static com.dmg27.dtre.trade.InstructionTest.createInstruction;
+import static com.dmg27.dtre.trade.WorkingWeek.*;
 import static com.dmg27.dtre.trade.WorkingWeekTestConstants.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -50,7 +51,7 @@ public class TradesTest {
         @Test
         public void createTradesTest() {
             Trades trades = new Trades()
-                .workingWeek(DEFAULT_WORKING_WEEK);
+                .workingWeek(DEMO_WORKING_WEEK);
             List<Instruction> tradesCltn = trades.getTrades();
             assertTrue(tradesCltn.isEmpty());
 
@@ -320,7 +321,7 @@ public class TradesTest {
         static Trades createUnsettledTrades(List<Instruction> instructions) {
             return new Trades()
                 .trades(instructions)
-                .workingWeek(DEFAULT_WORKING_WEEK);
+                .workingWeek(DEMO_WORKING_WEEK);
         }
 
         /**

@@ -22,6 +22,38 @@ import java.util.Map;
  * @author douglasmcgee
  */
 final public class WorkingWeek {
+    /**
+     * Demo currency codes for Sunday to Thursday working week.
+     */
+    static final String CURRENCY_CODE_AED = "AED";
+    static final String CURRENCY_CODE_SAR = "SAR";
+    
+    /**
+     * Demo Sunday to Thursday working week.
+     */
+    static final List<DayOfWeek> SUNDAY_TO_THURSDAY = Arrays.asList(
+        new DayOfWeek [] {
+            DayOfWeek.SUNDAY,
+            DayOfWeek.MONDAY,
+            DayOfWeek.TUESDAY,
+            DayOfWeek.WEDNESDAY,
+            DayOfWeek.THURSDAY
+        }
+    );
+    
+    /**
+     * Demo currency to working week map.
+     */
+    static final Map<String, List<DayOfWeek>> CURRENCY_TO_WORKING_WEEK_MAP = new HashMap<>();
+    static {
+        CURRENCY_TO_WORKING_WEEK_MAP.put(CURRENCY_CODE_AED, SUNDAY_TO_THURSDAY);
+        CURRENCY_TO_WORKING_WEEK_MAP.put(CURRENCY_CODE_SAR, SUNDAY_TO_THURSDAY);
+    };
+    
+    /**
+     * Demo working week.
+     */
+    static final WorkingWeek DEMO_WORKING_WEEK = new WorkingWeek(CURRENCY_TO_WORKING_WEEK_MAP);
     
     /**
      * The key for the default working week.

@@ -8,6 +8,7 @@
 package com.dmg27.dtre.trade;
 
 import com.dmg27.dtre.core.DtreException;
+import static com.dmg27.dtre.trade.WorkingWeek.*;
 import static com.dmg27.dtre.trade.WorkingWeekTestConstants.*;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -229,7 +230,7 @@ public class WorkingWeekTest {
      * @return The {@link WorkingWeek} instance.
      */
     private WorkingWeek createDefaultWorkingWeek() {
-        return DEFAULT_WORKING_WEEK;
+        return DEMO_WORKING_WEEK;
     }
     
     /**

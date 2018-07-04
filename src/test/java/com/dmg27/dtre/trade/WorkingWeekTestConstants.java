@@ -21,29 +21,9 @@ import java.util.Map;
  * @author douglasmcgee
  */
 final public class WorkingWeekTestConstants {
-    static final String CURRENCY_CODE_AED = "AED";
     static final String CURRENCY_CODE_ALL = "ALL";
     static final String CURRENCY_CODE_GBP = "GBP";
-    static final String CURRENCY_CODE_SAR = "SAR";
     static final String CURRENCY_CODE_SGD = "SGD";
-    
-    static final List<DayOfWeek> SUNDAY_TO_THURSDAY = Arrays.asList(
-        new DayOfWeek [] {
-            DayOfWeek.SUNDAY,
-            DayOfWeek.MONDAY,
-            DayOfWeek.TUESDAY,
-            DayOfWeek.WEDNESDAY,
-            DayOfWeek.THURSDAY
-        }
-    );
-    
-    static final Map<String, List<DayOfWeek>> DEFAULT_CURRENCY_TO_WORKING_WEEK_MAP = new HashMap<>();
-    static {
-        DEFAULT_CURRENCY_TO_WORKING_WEEK_MAP.put(CURRENCY_CODE_AED, SUNDAY_TO_THURSDAY);
-        DEFAULT_CURRENCY_TO_WORKING_WEEK_MAP.put(CURRENCY_CODE_SAR, SUNDAY_TO_THURSDAY);
-    };
-    
-    static final WorkingWeek DEFAULT_WORKING_WEEK = new WorkingWeek(DEFAULT_CURRENCY_TO_WORKING_WEEK_MAP);
     
     static final Clock CLOCK_MON_01_FEB_2016 = Clock.fixed(Instant.parse("2016-02-01T00:00:00Z"), ZoneOffset.UTC);
     
