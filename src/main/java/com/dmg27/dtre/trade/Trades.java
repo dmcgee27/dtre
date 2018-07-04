@@ -7,7 +7,6 @@
  */
 package com.dmg27.dtre.trade;
 
-import com.dmg27.dtre.core.BuySell;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;

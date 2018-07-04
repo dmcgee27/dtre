@@ -7,7 +7,6 @@
  */
 package com.dmg27.dtre.trade;
 
-import com.dmg27.dtre.core.BuySell;
 import static com.dmg27.dtre.trade.InstructionTest.createInstruction;
 import static com.dmg27.dtre.trade.WorkingWeek.*;
 import static com.dmg27.dtre.trade.WorkingWeekTestConstants.*;

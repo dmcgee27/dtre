@@ -5,7 +5,7 @@
  * Copyright 2018 (c) DMG27 Ltd.
  *
  */
-package com.dmg27.dtre.core;
+package com.dmg27.dtre.trade;
 
 /**
  *

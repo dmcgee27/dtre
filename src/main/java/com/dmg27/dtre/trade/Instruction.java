@@ -7,7 +7,6 @@
  */
 package com.dmg27.dtre.trade;
 
-import com.dmg27.dtre.core.BuySell;
 import com.dmg27.dtre.core.DtreException;
 import com.dmg27.dtre.util.Util;
 import java.math.BigDecimal;
