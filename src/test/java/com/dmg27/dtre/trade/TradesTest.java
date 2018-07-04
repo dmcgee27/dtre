@@ -35,12 +35,12 @@ public class TradesTest {
     /**
      * Entity names.
      */
-    private static final String BAR = "bar";
-    private static final String CAR = "car";
-    private static final String FOO = "foo";
-    private static final String GLA = "gla";
-    private static final String LAM = "lam";
-    private static final String WIN = "win";
+    public static final String BAR = "bar";
+    public static final String CAR = "car";
+    public static final String FOO = "foo";
+    public static final String GLA = "gla";
+    public static final String LAM = "lam";
+    public static final String WIN = "win";
     
     /**
      * Tests built around stubbed instructions.
@@ -889,7 +889,7 @@ public class TradesTest {
                 assertEquals(new BigDecimal(expectedTotalOutOnFor[j]), totalOutOnFor);
                 assertEquals(new BigDecimal(expectedTotalInOnFor[j]), totalInOnFor);
                 
-                // TODO Fix the mock so that it can get the max settlement amount.
+                // TODO Fix the mock so that it can get the max settlement amount or it is a Mockito bug.
                 // Get the highest settlement amount for the entity on the day.
 //                Optional<BigDecimal> highestSettlementAmount = trades.getTradesOnAndFor(date, Optional.of(entity))..stream()
 //                    .max(Comparator.naturalOrder());

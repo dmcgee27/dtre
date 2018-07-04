@@ -280,7 +280,7 @@ public class InstructionTest {
      * @param unitPriceString
      * @return 
      */
-    static Instruction createInstruction(
+    public static Instruction createInstruction(
             String entity, 
             String buySell, 
             String agreedFx, 

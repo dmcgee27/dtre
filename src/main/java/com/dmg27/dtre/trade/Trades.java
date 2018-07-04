@@ -35,7 +35,7 @@ final public class Trades {
         return this;
     }
 
-    List<Instruction> getTrades() {
+    public List<Instruction> getTrades() {
         return tradesCltn;
     }
     

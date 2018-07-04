@@ -13,8 +13,10 @@ import java.math.BigDecimal;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.Formatter;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * A textual view of transactions transactions.
@@ -31,7 +33,7 @@ public class TextualReportViewParts extends AbstractReportViewParts {
     /**
      * A horizontal line for the view.
      */
-    final private static String BOX_LINE = "================================================================";
+    final private static String BOX_LINE = "==================================================================================";
     
     /**
      * Create an instance of {@link TextualReportViewParts}.
@@ -47,7 +49,7 @@ public class TextualReportViewParts extends AbstractReportViewParts {
             formatter.format(
                 "Report for period from %-11.11s to %-11.11s" + NL +
                 BOX_LINE + NL +
-                "| Date            | Entity | Total Incomming | Total Outgoiing |" + NL +
+                "| Date            | Entity | Total Incomming | Total Outgoing  | Highest Amount  |" + NL +
                 BOX_LINE + NL,
                 from.format(DATE_FORMAT_JPM),
                 to.format(DATE_FORMAT_JPM));
@@ -63,7 +65,7 @@ public class TextualReportViewParts extends AbstractReportViewParts {
         
         // Create the per entity totals for the day.
         try (Formatter formatter = new Formatter()) {
-            String template = "| %3.3s %-11.11s | %3.3s | %-15.15s | %-15.15s |" + NL;
+            String template = "| %3.3s %-11.11s |  %3.3s   | %15.15s | %15.15s | %15.15s |" + NL;
 
             // The instructions are already ranked for entity with highest settlement aount.
             List<Instruction> instructions = trades.getTradesOn(date);
@@ -80,13 +82,19 @@ public class TextualReportViewParts extends AbstractReportViewParts {
                 // Total trades in and out for the enity on the day.
                 BigDecimal totalInOnFor = trades.getTotalSettledIncommingOnAndFor(date, entity);
                 BigDecimal totalOutOnFor = trades.getTotalSettledOutgoingOnAndFor(date, entity);
+                Optional<BigDecimal> highestSettlementAmountOpt = trades.getTradesOnAndFor(date, Optional.of(entity)).stream()
+                    .filter(i -> i.getSettledAmount().isPresent())
+                    .map(i -> i.getSettledAmount().get())
+                    .max(Comparator.naturalOrder());
+                BigDecimal highestSettlementAmount = highestSettlementAmountOpt.orElse(new BigDecimal("0.00"));
             
                 formatter.format(template,
                     dayOfWeek,
                     date.format(DATE_FORMAT_JPM),
                     entity,
                     totalInOnFor,
-                    totalOutOnFor);
+                    totalOutOnFor,
+                    highestSettlementAmount);
             }
             
             result = formatter.toString();
@@ -95,9 +103,9 @@ public class TextualReportViewParts extends AbstractReportViewParts {
         // Create the overal totals for the day.
         try (Formatter formatter = new Formatter()) {
             String template = 
-                "|                 |--------|                 |                 |" + NL +
-                "| %3.3s %-11.11s | totals | %15.15s | %15.15s |" + NL +
-                "|                 |--------|                 |                 |" + NL;            
+                "|                 |--------|                 |                 |                 |" + NL +
+                "| %3.3s %-11.11s | totals | %15.15s | %15.15s |                 |" + NL +
+                "|                 |--------|                 |                 |                 |" + NL;            
             
             // Totals trades for all entities in and out on the day.
             BigDecimal totalIn = trades.getTotalSettledIncommingOn(date);
