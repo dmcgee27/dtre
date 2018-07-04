@@ -269,7 +269,7 @@ public class InstructionTest {
     }
     
     /**
-     * Create a {@link Instruction} instance.
+     * Create an {@link Instruction} instance.
      * @param entity
      * @param buySell
      * @param agreedFx

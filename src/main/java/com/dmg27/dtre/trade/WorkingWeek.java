@@ -53,7 +53,7 @@ final public class WorkingWeek {
     /**
      * Demo working week.
      */
-    static final WorkingWeek DEMO_WORKING_WEEK = new WorkingWeek(CURRENCY_TO_WORKING_WEEK_MAP);
+    public static final WorkingWeek DEMO_WORKING_WEEK = new WorkingWeek(CURRENCY_TO_WORKING_WEEK_MAP);
     
     /**
      * The key for the default working week.
