@@ -15,7 +15,7 @@ import java.util.Currency;
  * Utility methods.
  * @author douglasmcgee
  */
-public class Util {
+final public class Util {
     /**
      * Get the currency represented by the currency code.
      * @param currencyCode The currency code.
