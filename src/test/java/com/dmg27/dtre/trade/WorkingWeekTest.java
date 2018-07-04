@@ -8,8 +8,6 @@
 package com.dmg27.dtre.trade;
 
 import com.dmg27.dtre.core.DtreException;
-import static com.dmg27.dtre.trade.WorkingWeek.*;
-import static com.dmg27.dtre.trade.WorkingWeekTestConstants.*;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -17,8 +15,11 @@ import java.util.Currency;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
-import static org.junit.Assert.assertEquals;
 import org.junit.Test;
+
+import static com.dmg27.dtre.trade.WorkingWeek.*;
+import static com.dmg27.dtre.trade.WorkingWeekTestConstants.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Unit tests for {@link WorkingWeek}.

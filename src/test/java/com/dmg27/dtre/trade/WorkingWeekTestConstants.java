@@ -8,13 +8,8 @@
 package com.dmg27.dtre.trade;
 
 import java.time.Clock;
-import java.time.DayOfWeek;
 import java.time.Instant;
 import java.time.ZoneOffset;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Constants supporting used of the {@link WorkingWeek} class.

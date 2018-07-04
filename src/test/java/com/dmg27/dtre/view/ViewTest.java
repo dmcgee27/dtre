@@ -9,6 +9,12 @@ package com.dmg27.dtre.view;
 
 import com.dmg27.dtre.trade.Instruction;
 import com.dmg27.dtre.trade.Trades;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import org.junit.Test;
+
 import static com.dmg27.dtre.trade.InstructionTest.createInstruction;
 import static com.dmg27.dtre.trade.TradesTest.BAR;
 import static com.dmg27.dtre.trade.TradesTest.CAR;
@@ -17,14 +23,9 @@ import static com.dmg27.dtre.trade.TradesTest.GLA;
 import static com.dmg27.dtre.trade.TradesTest.LAM;
 import static com.dmg27.dtre.trade.TradesTest.StubbedInstructionsTests.createSettledTrades;
 import static com.dmg27.dtre.trade.TradesTest.WIN;
-import static com.dmg27.dtre.view.ViewFactory.textualAccountTransactionsView;
 import static com.dmg27.dtre.trade.WorkingWeekTestConstants.*;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
 import static org.junit.Assert.assertFalse;
-import org.junit.Test;
+import static com.dmg27.dtre.view.ViewFactory.textualReportView;
 
 /**
  * Unit tests for the view classes
@@ -306,7 +307,7 @@ public class ViewTest {
     }
     
     private void assertShowReport(Trades trades, String from, String to) {
-        String report = textualAccountTransactionsView(trades, LocalDate.parse(from), LocalDate.parse(to));
+        String report = textualReportView(trades, LocalDate.parse(from), LocalDate.parse(to));
         assertFalse(report.isEmpty());
         System.out.println(report);
     }

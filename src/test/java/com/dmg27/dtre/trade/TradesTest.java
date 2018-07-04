@@ -7,22 +7,23 @@
  */
 package com.dmg27.dtre.trade;
 
-import static com.dmg27.dtre.trade.InstructionTest.createInstruction;
-import static com.dmg27.dtre.trade.WorkingWeek.*;
-import static com.dmg27.dtre.trade.WorkingWeekTestConstants.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
+
+import static com.dmg27.dtre.trade.InstructionTest.createInstruction;
+import static com.dmg27.dtre.trade.WorkingWeek.*;
+import static com.dmg27.dtre.trade.WorkingWeekTestConstants.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
 /**

@@ -9,8 +9,6 @@ package com.dmg27.dtre.core;
 
 import com.dmg27.dtre.trade.Instruction;
 import com.dmg27.dtre.trade.Trades;
-import static com.dmg27.dtre.trade.WorkingWeek.*;
-import static com.dmg27.dtre.view.ViewFactory.textualAccountTransactionsView;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -18,6 +16,9 @@ import java.util.Comparator;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static com.dmg27.dtre.trade.WorkingWeek.*;
+import static com.dmg27.dtre.view.ViewFactory.textualReportView;
 
 /**
  * This class provides a main method for the Daily Trades Reporting Engine.
@@ -108,7 +109,7 @@ public class Dtre {
      * @param to End of the period.
      */
     private static void showReport(Trades trades, String from, String to) {
-        String report = textualAccountTransactionsView(trades, LocalDate.parse(from), LocalDate.parse(to));
+        String report = textualReportView(trades, LocalDate.parse(from), LocalDate.parse(to));
         System.out.println(report);
     }
     

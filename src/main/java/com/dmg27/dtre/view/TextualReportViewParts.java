@@ -37,7 +37,7 @@ public class TextualReportViewParts extends AbstractReportViewParts {
     
     /**
      * Create an instance of {@link TextualReportViewParts}.
-     * @param transactions The transactions transactions to view.
+     * @param trades The trades to view.
      */
     TextualReportViewParts(Trades trades) {
         super(trades);
@@ -49,7 +49,7 @@ public class TextualReportViewParts extends AbstractReportViewParts {
             formatter.format(
                 "Report for period from %-11.11s to %-11.11s" + NL +
                 BOX_LINE + NL +
-                "| Date            | Entity | Total Incomming | Total Outgoing  | Highest Amount  |" + NL +
+                "| Date            | Entity | Total Incoming  | Total Outgoing  | Highest Amount  |" + NL +
                 BOX_LINE + NL,
                 from.format(DATE_FORMAT_JPM),
                 to.format(DATE_FORMAT_JPM));

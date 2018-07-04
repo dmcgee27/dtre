@@ -16,8 +16,8 @@ import java.time.LocalDate;
  * A view consists of:
  * <ul>
  * <li>A header</li>
- * <li>Zero or more entity trades per day</li>
- * <li>Zero or one total trades per day</li>
+ * <li>Zero or more entity trades rows per day</li>
+ * <li>One total trades row per day</li>
  * <li>A footer</li>
  * </ul>
  * 
@@ -37,7 +37,7 @@ abstract public class AbstractReportViewParts {
     
     /**
      * Create an instance of a subclass of {@link AbstractReportViewParts}.
-     * @param transactions The transactions transactions to view.
+     * @param trades The trades to view.
      */
     AbstractReportViewParts(Trades trades) {
         this.trades = trades;

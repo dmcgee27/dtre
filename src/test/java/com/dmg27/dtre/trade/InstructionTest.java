@@ -8,15 +8,16 @@
 package com.dmg27.dtre.trade;
 
 import com.dmg27.dtre.core.DtreException;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import org.junit.Test;
+
 import static com.dmg27.dtre.trade.Instruction.NO_ID;
 import static com.dmg27.dtre.trade.WorkingWeek.*;
 import static com.dmg27.dtre.trade.WorkingWeekTestConstants.*;
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import org.junit.Test;
 
 /**
  * Unit tests for class {@link Instruction}.
