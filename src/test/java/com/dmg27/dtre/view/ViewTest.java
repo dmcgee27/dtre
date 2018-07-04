@@ -66,6 +66,22 @@ public class ViewTest {
     }
     
     @Test 
+    public void basicOneDayWithDescendingBuyUsdInstructionsMonToFriWithUnsettleableTest() {
+        System.out.println("\nTest :" + new Object(){}.getClass().getEnclosingMethod());
+        List<Instruction> instructions = new ArrayList<>();
+        instructions.add(createInstruction(BAR, "B", "1.0", "USD", "04 Jan 2016", "04 Jan 2016", 6000, "1.0")); 
+        instructions.add(createInstruction(CAR, "B", "1.0", "USD", "04 Jan 2016", "04 Jan 2016", 5000, "1.0")); 
+        instructions.add(createInstruction(CAR, "B", "1.0", "USD", "04 Jan 2016", "04 Jan 2020", 9999, "1.0")); 
+        instructions.add(createInstruction(FOO, "B", "1.0", "USD", "04 Jan 2016", "04 Jan 2016", 4000, "1.0")); 
+        instructions.add(createInstruction(GLA, "B", "1.0", "USD", "04 Jan 2016", "04 Jan 2016", 3000, "1.0")); 
+        instructions.add(createInstruction(LAM, "B", "1.0", "USD", "04 Jan 2016", "04 Jan 2016", 2000, "1.0")); 
+        instructions.add(createInstruction(WIN, "B", "1.0", "USD", "04 Jan 2016", "04 Jan 2016", 1000, "1.0"));
+        
+        Trades trades = createSettledTrades(instructions);
+        assertShowReport(trades);
+    }
+    
+    @Test 
     public void basicOneDayWithAscendingSellUsdInstructionsMonToFriTest() {
         System.out.println("\nTest :" + new Object(){}.getClass().getEnclosingMethod());
         List<Instruction> instructions = new ArrayList<>();
@@ -120,7 +136,7 @@ public class ViewTest {
         instructions.add(createInstruction(BAR, "S", "1.0", "USD", "04 Jan 2016", "04 Jan 2016", 6000, "1.0")); 
         instructions.add(createInstruction(CAR, "S", "1.0", "USD", "04 Jan 2016", "04 Jan 2016", 5000, "1.0")); 
         instructions.add(createInstruction(FOO, "S", "1.0", "USD", "04 Jan 2016", "04 Jan 2016", 4000, "1.0")); 
-        instructions.add(createInstruction(GLA, "S", "1.0", "USD", "04 Jan 2016", "04 Jan 2016", 3000, "1.0")); 
+        instructions.add(createInstruction(GLA, "S", "1.0", "USD", "04 Jan 2016", "04 Jan 2020", 3000, "1.0")); 
         instructions.add(createInstruction(LAM, "S", "1.0", "USD", "04 Jan 2016", "04 Jan 2016", 2000, "1.0")); 
         instructions.add(createInstruction(WIN, "S", "1.0", "USD", "04 Jan 2016", "04 Jan 2016", 1000, "1.0"));
         
@@ -275,11 +291,13 @@ public class ViewTest {
     
     private void assertShowReport(Trades trades) {
         String from = trades.getTrades().stream()
+            .filter(i -> i.isSettleable())
             .map(i -> i.getEffectiveSettlementDate())
             .min(Comparator.naturalOrder())
             .get()
             .toString();
         String to = trades.getTrades().stream()
+            .filter(i -> i.isSettleable())
             .map(i -> i.getEffectiveSettlementDate())
             .max(Comparator.naturalOrder())
             .get()

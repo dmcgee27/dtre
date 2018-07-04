@@ -14,7 +14,6 @@ import static com.dmg27.dtre.view.ViewFactory.textualAccountTransactionsView;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import org.slf4j.Logger;
@@ -88,11 +87,13 @@ public class Dtre {
      */
     private static void showReport(Trades trades) {
         String from = trades.getTrades().stream()
+            .filter(i -> i.isSettleable())
             .map(i -> i.getEffectiveSettlementDate())
             .min(Comparator.naturalOrder())
             .get()
             .toString();
         String to = trades.getTrades().stream()
+            .filter(i -> i.isSettleable())
             .map(i -> i.getEffectiveSettlementDate())
             .max(Comparator.naturalOrder())
             .get()
@@ -124,6 +125,7 @@ public class Dtre {
         instructions.add(createInstruction("car", "S", "1.0", "USD", "04 Jan 2016", "04 Jan 2016", 5000, "1.0")); 
         instructions.add(createInstruction("foo", "B", "0.5", "SGD", "03 Jan 2016", "04 Jan 2016", 20, "100.25")); 
         instructions.add(createInstruction("gla", "B", "1.0", "USD", "04 Jan 2016", "04 Jan 2016", 3000, "1.0")); 
+        instructions.add(createInstruction("gla", "B", "1.0", "USD", "04 Jan 2016", "04 Jan 2020", 9999, "1.0")); 
         instructions.add(createInstruction("gla", "B", "1.0", "USD", "04 Jan 2016", "04 Jan 2016", 3001, "1.0")); 
         instructions.add(createInstruction("gla", "S", "1.0", "USD", "04 Jan 2016", "04 Jan 2016", 3002, "1.0")); 
         instructions.add(createInstruction("lam", "B", "1.0", "USD", "04 Jan 2016", "04 Jan 2016", 2000, "1.0")); 
